@@ -1,0 +1,105 @@
+@charset "utf-8";
+
+/*--------------------------------------------------
+  General
+---------------------------------------------------*/
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    min-width: 720px;
+    max-width: 1080px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+button, input, select, textarea {
+    font-family : inherit;
+    font-size   : 100%;
+}
+
+/*--------------------------------------------------
+  Header
+---------------------------------------------------*/
+.main-header {
+    margin-bottom: 20px;
+}
+
+.main-header .nav-bar {
+    background-color: rgba(0, 255, 0, 0.3);
+    padding-left: 10px;
+    line-height: 40px;
+    font-style: italic;
+    font-size: 24px;
+}
+
+/*--------------------------------------------------
+  Content(Form)
+---------------------------------------------------*/
+.form-post {
+    max-width: 650px;
+}
+
+.form-post .content-header {
+    margin-left: 1.0rem;
+}
+
+.form-post .input-title,
+.form-post .input-body,
+.form-post .input-submit {
+    margin-bottom: 10px;
+}
+
+.form-post label {
+    display: inline-block;
+    width: 100px;
+    padding-top: 0.1rem;
+    vertical-align: top;
+    text-align: right;
+}
+
+.form-post .input-title input,
+.form-post .input-body textarea {
+    width: 500px;
+    border-radius: 4px;
+}
+
+.form-post .input-title input {
+    height: 1.4rem;
+}
+
+.form-post .input-body textarea {
+    resize: none;
+    height: 200px;
+}
+
+.form-post .input-submit {
+    text-align: right;
+}
+
+.form-post .btn-submit {
+    display: inline-block;
+    margin-right: 50px;
+    padding: 7px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    color: #FFF;
+    background-image: linear-gradient(45deg, #FFC107 0%, #ff8b5f 100%);
+    transition: .4s;
+}
+
+.form-post .btn-submit:hover {
+    background-image: linear-gradient(45deg, #FFC107 0%, #f76a35 100%);
+}
+
+/*--------------------------------------------------
+  Content(Articles)
+---------------------------------------------------*/
+.post {
+    margin-left: 1.0rem;
+}
+
+.post .post-body{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 40px;
+}
