@@ -13,5 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/posts', 'PostController@index')->name('posts.index');
-Route::post('/posts', 'PostController@store')->name('posts.store');
+Route::resource('posts', 'PostController')->only([
+  'index', 'store', 'show'
+]);
+
+Route::resource('comments', 'CommentController')->only([
+  'store', 'destroy'
+]);

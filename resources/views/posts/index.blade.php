@@ -10,11 +10,14 @@
 </head>
 <body>
     <nav class="main-header">
-      <div class="nav-bar">SAi Tech News</div>
+        <div class="nav-bar">
+            {{ Html::linkRoute('posts.index', 'SAi Tech News', [], ['class' => 'nav-link']) }}
+        </div>
     </nav>
     <section class="form-post">
-        <h2 class="content-header">あなたのニュースをシェアしませんか？</h2>
-        {{ Form::open(['route' => 'posts.store']) }}
+        <h2 class="content-header">さぁ、最新のニュースをシェアしましょう</h2>
+        <form id="formPost" method="POST" action="/bbs/posts" accept-charset="UTF-8">
+        {{ csrf_field() }}
             <div class="input-title">
                 {{ Form::label('title', 'タイトル：') }}
                 {{ Form::input('text', 'title') }}
@@ -34,7 +37,7 @@
             <div class="post">
                 <h3 class="post-title">{{ $post->title }}</h3>
                 <p class="post-body">{{ $post->body }}</p>
-                {{ Html::linkRoute('posts.index', '記事全文・コメントを見る') }}
+                {{ Html::linkRoute('posts.show', '記事全文・コメントを見る', $post->id) }}
             </div>
             <hr>
         @endforeach
