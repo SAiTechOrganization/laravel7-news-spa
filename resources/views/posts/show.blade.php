@@ -19,6 +19,15 @@
         <p class="post-body">{!! nl2br(e($post->body)) !!}</p>
     </section>
     <hr>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <section class="comments">
     @php
         $colors = ['blue', 'red', 'yellow'];

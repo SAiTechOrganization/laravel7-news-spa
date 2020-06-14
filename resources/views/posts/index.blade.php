@@ -16,6 +16,15 @@
     </nav>
     <section class="form-post">
         <h2 class="content-header">さぁ、最新のニュースをシェアしましょう</h2>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form id="formPost" method="POST" action="/bbs/posts" accept-charset="UTF-8">
         {{ csrf_field() }}
             <div class="input-title">
