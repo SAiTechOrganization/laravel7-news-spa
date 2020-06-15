@@ -26,5 +26,10 @@ class AppServiceProvider extends ServiceProvider
     {
         // use charset "utf8mb4" on cleardb
         Schema::defaultStringLength(191);
+
+        // rewrite schema for getting assets
+        if (request()->isSecure()) {
+            \URL::forceScheme('https');
+        }
     }
 }
