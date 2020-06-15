@@ -1,32 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.app')
 
-    <title>SAi Tech News</title>
+@section('title', 'Index')
 
-    <link rel="stylesheet" href="{{ asset('/css/posts.css') }}">
-</head>
-<body>
-    <nav class="main-header">
-        <div class="nav-bar">
-            {{ Html::linkRoute('posts.index', 'SAi Tech News', [], ['class' => 'nav-link']) }}
-        </div>
-    </nav>
+@section('content')
     <section class="form-post">
         <h2 class="content-header">さぁ、最新のニュースをシェアしましょう</h2>
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        <form id="formPost" method="POST" action="/bbs/posts" accept-charset="UTF-8">
-        {{ csrf_field() }}
+        @include('common.validation_errors')
+        <form id="formPost" method="POST" action="/laravel-news/posts" accept-charset="UTF-8">
+            @csrf
             <div class="input-title">
                 {{ Form::label('title', 'タイトル：') }}
                 {{ Form::input('text', 'title') }}
@@ -51,6 +32,4 @@
             <hr>
         @endforeach
     </section>
-    <script src="{{ asset('/js/posts.js') }}"></script>
-</body>
-</html>
+@endsection

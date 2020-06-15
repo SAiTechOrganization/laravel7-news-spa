@@ -1,33 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.app')
 
-    <title>SAi Tech News</title>
+@section('title', 'News ' . $post->id)
 
-    <link rel="stylesheet" href="{{ asset('/css/posts.css') }}">
-</head>
-<body>
-    <nav class="main-header">
-        <div class="nav-bar">
-            {{ Html::linkRoute('posts.index', 'SAi Tech News', [], ['class' => 'nav-link']) }}
-        </div>
-    </nav>
+@section('content')
     <section class="post-detail">
         <h3 class="post-title">{!! nl2br(e($post->title)) !!}</h3>
         <p class="post-body">{!! nl2br(e($post->body)) !!}</p>
     </section>
     <hr>
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    @include('common.validation_errors')
     <section class="comments">
     @php
         $colors = ['blue', 'red', 'yellow'];
@@ -52,5 +33,4 @@
             @endforeach
         @endif
     </section>
-</body>
-</html>
+@endsection
