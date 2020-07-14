@@ -1,4 +1,6 @@
+import VueRouter from 'vue-router';
 import HeaderComponent from './components/HeaderComponent.vue';
+import PostListComponent from './components/PostListComponent.vue';
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -18,6 +20,8 @@ window.Vue = require('vue');
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
+ Vue.use(VueRouter);
+
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
@@ -29,6 +33,18 @@ Vue.component('header-component', HeaderComponent);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+const router = new VueRouter({
+    mode: 'history',
+    routes: [
+        {
+            path: '/laravel-news-spa/',
+            name: 'post.list',
+            component: PostListComponent
+        },
+    ]
+});
+
 const app = new Vue({
     el: '#app',
+    router
 });
