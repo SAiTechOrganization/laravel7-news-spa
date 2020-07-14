@@ -15,3 +15,9 @@
 <script>
     export default {}
 </script>
+
+<style scoped>
+.navbar a {
+    text-decoration: none;
+}
+</style>

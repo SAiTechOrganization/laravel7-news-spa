@@ -31,7 +31,9 @@
             <div class="post">
                 <h3 class="post-title">タイトル1</h3>
                 <p class="post-body">ボディ1</p>
-                <a href="#">記事全文・コメントを見る</a>
+                <router-link v-bind:to="{name: 'post.show', params: {postId: post.id.toString() }}">
+                    <a href="#">記事全文・コメントを見る</a>
+                </router-link>
             </div>
             <hr>
         </div>
@@ -40,7 +42,15 @@
 </template>
 
 <script>
-    export default {}
+    export default {
+        data: function() {
+            return {
+                post: {
+                    id: 1
+                }
+            }
+        }
+    }
 </script>
 
 <style scoped>

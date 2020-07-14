@@ -1,6 +1,7 @@
 import VueRouter from 'vue-router';
 import HeaderComponent from './components/HeaderComponent.vue';
 import PostListComponent from './components/PostListComponent.vue';
+import PostShowComponent from './components/PostShowComponent.vue';
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -40,6 +41,12 @@ const router = new VueRouter({
             path: '/laravel-news-spa/',
             name: 'post.list',
             component: PostListComponent
+        },
+        {
+            path: '/laravel-news-spa/posts/:postId',
+            name: 'post.show',
+            component: PostShowComponent,
+            props: true
         },
     ]
 });
