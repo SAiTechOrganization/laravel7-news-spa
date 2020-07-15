@@ -1,14 +1,21 @@
 <template>
 <div class="container">
-    <div class="row">
-        <div class="col-xs-12 col-md-12">
-            <div class="post">
-                <h3 class="post-title">{{ post.title }}</h3>
-                <p class="post-body">{{ post.body }}</p>
-            </div>
-            <hr>
+    <div v-if="loadingPost" class="spinner-post text-center">
+        <div class="spinner-border text-secondary mt-5" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
     </div>
+    <template v-else>
+        <div class="row">
+            <div class="col-xs-12 col-md-12">
+                <div class="post">
+                    <h3 class="post-title">{{ post.title }}</h3>
+                    <p class="post-body">{{ post.body }}</p>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </template>
     <template v-if="errors">
         <div class="alert alert-warning" role="alert">
             <ul class="mb-0">
@@ -20,30 +27,58 @@
             </ul>
         </div>
     </template>
-    <div class="row">
-        <div class="col-xs-12 col-md-4 col-lg-3 mb-4">
-            <div class="card position-relative">
-                <div class="card-body">
-                    <form v-on:submit.prevent="submitComment()">
-                        <textarea name="body" rows="4" v-model="newComment.body"></textarea>
-                        <button type="submit" class="btn btn-primary btn-submit position-absolute">
-                            コメントを書く
-                        </button>
-                    </form>
-                </div>
-            </div>
+    <div v-if="loadingComment" class="spinner-comment text-center mt-5">
+        <div class="spinner-grow text-primary" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
-        <div class="col-xs-12 col-md-4 col-lg-3 mb-4" v-for="comment in comments" v-bind:key="comment.id">
-            <div class="card position-relative">
-                <div class="card-body">
-                    <p>{{ comment.body }}</p>
-                    <a href="#" class="link-delete position-absolute" v-on:click="deleteComment(comment.id)">
-                        コメントを消す
-                    </a>
-                </div>
-            </div>
+        <div class="spinner-grow text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-success" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-danger" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-warning" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-info" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-light" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-dark" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
     </div>
+    <template v-else>
+        <div class="row">
+            <div class="col-xs-12 col-md-4 col-lg-3 mb-4">
+                <div class="card position-relative">
+                    <div class="card-body">
+                        <form v-on:submit.prevent="submitComment()">
+                            <textarea name="body" rows="4" v-model="newComment.body"></textarea>
+                            <button type="submit" class="btn btn-primary btn-submit position-absolute">
+                                コメントを書く
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4 col-lg-3 mb-4" v-for="comment in comments" v-bind:key="comment.id">
+                <div class="card position-relative">
+                    <div class="card-body">
+                        <p class="comment-body">{{ comment.body }}</p>
+                        <a href="#" class="link-delete position-absolute" v-on:click="deleteComment(comment.id)">
+                            コメントを消す
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
 </div>
 </template>
 
@@ -58,6 +93,8 @@ export default {
     },
     data: function() {
         return {
+            loadingPost: false,
+            loadingComment: false,
             errors: null,
             post: {},
             newComment: {
@@ -69,19 +106,33 @@ export default {
     },
     methods: {
         fetchPost() {
+            if (!Object.keys(this.post).length) {
+                this.loadingPost = true;
+            }
+
+            this.loadingComment = true;
+
             axios.get(postShowURL + this.postId)
                 .then((res) => {
                     this.errors = null;
                     this.post = res.data.post;
                     this.comments = res.data.comments;
+
+                    this.loadingPost = false;
+                    this.loadingComment = false;
                 }).catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
+
+                    this.loadingPost = false;
+                    this.loadingComment = false;
                 });
         },
         submitComment() {
             if (this.checkForm() === false) {
                 return;
             }
+
+            this.loadingComment = true;
 
             axios.post(commentStoreURL, this.newComment)
                 .then((res) => {
@@ -90,14 +141,20 @@ export default {
                     this.fetchPost();
                 }).catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
+
+                    this.loadingComment = false;
                 });
         },
         deleteComment(id) {
+            this.loadingComment = true;
+
             axios.delete(commentDestroyURL + id)
                 .then((res) => {
                     this.fetchPost();
                 }).catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
+
+                    this.loadingComment = false;
                 });
         },
         checkForm() {
@@ -132,7 +189,12 @@ export default {
 </script>
 
 <style scoped>
-.post-body {
+.spinner-post {
+    height: 300px;
+}
+
+.post-body,
+.comment-body {
     white-space: pre;
 }
 

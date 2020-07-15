@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <form v-on:submit.prevent="submitPost()">
+            <form v-on:submit.prevent="confirmPost()">
                 <div class="row form-group mb-2">
                     <label for="title" class="col-xs-12 col-md-2  col-lg-2 label-title">タイトル</label>
                     <input type="text" class="col-xs-12 col-md-9 col-lg-6 form-control ml-2 mr-2"
@@ -41,16 +41,46 @@
             <hr>
         </div>
     </div>
-    <div class="row" v-for="post in posts" v-bind:key="post.id">
-        <div class="col-xs-12 col-md-12">
-            <div class="post">
-                <h3 class="post-title">{{ post.title }}</h3>
-                <p class="post-body">{{ post.body }}</p>
-                <router-link v-bind:to="{ name: 'post.show', params: { postId: post.id.toString() } }">
-                    <p>記事全文・コメントを見る</p>
-                </router-link>
+    <div v-if="loading" class="text-center">
+        <div class="spinner-border text-secondary mt-5" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <template v-else>
+        <div class="row" v-for="post in posts" v-bind:key="post.id">
+            <div class="col-xs-12 col-md-12">
+                <div class="post">
+                    <h3 class="post-title">{{ post.title }}</h3>
+                    <p class="post-body">{{ post.body }}</p>
+                    <router-link v-bind:to="{ name: 'post.show', params: { postId: post.id.toString() } }">
+                        <span>記事全文・コメントを見る</span>
+                    </router-link>
+                </div>
+                <hr>
             </div>
-            <hr>
+        </div>
+    </template>
+
+    <div class="modal fade" id="confirm-post" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title">確認</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    投稿してよろしいですか？
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">いいえ</button>
+                    <button type="button" class="btn btn-success" id="btn-post" name="btn-post"
+                            v-on:click="submitPost()">
+                         はい
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -63,6 +93,7 @@ const postStoreURL = '/laravel-news-spa/api/posts';
 export default {
     data: function() {
         return {
+            loading: false,
             errors: null,
             post: {
                 title: '',
@@ -73,18 +104,32 @@ export default {
     },
     methods: {
         fetchPosts() {
+            this.loading = true;
+
             axios.get(postIndexURL)
                 .then((res) => {
                     this.errors = null;
                     this.posts = res.data;
+
+                    this.loading = false;
                 }).catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
+
+                    this.loading = false;
                 });
+
         },
-        submitPost() {
+        confirmPost() {
             if (this.checkForm() === false) {
                 return;
             }
+
+            // NOTE: アニメーションを使用しないため,フェード・イン効果を出すためにjQueryを利用
+            $('#confirm-post').modal('show');
+        },
+        submitPost() {
+            // NOTE: アニメーションを使用しないため,フェード・アウト効果を出すためにjQueryを利用
+            $('#confirm-post').modal('hide');
 
             axios.post(postStoreURL, this.post)
                 .then((res) => {
