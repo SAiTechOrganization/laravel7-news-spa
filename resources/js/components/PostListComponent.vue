@@ -42,15 +42,15 @@
 </template>
 
 <script>
-    export default {
-        data: function() {
-            return {
-                post: {
-                    id: 1
-                }
+export default {
+    data: function() {
+        return {
+            post: {
+                id: 1
             }
         }
     }
+}
 </script>
 
 <style scoped>

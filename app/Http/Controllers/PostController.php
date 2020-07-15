@@ -7,25 +7,11 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index() {
-        $posts = Post::orderBy('created_at', 'desc')->get();
 
-        return view('posts.index', [
-            'posts' => $posts,
-        ]);
+    public function index() {
+        return Post::orderBy('created_at', 'desc')->get();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request) {
         $this->validate(
             $request,
@@ -47,23 +33,18 @@ class PostController extends Controller
         $post->body  = $request->body;
         $post->save();
 
-        return redirect()->back();
+        return $post;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show(int $id) {
         $post = Post::find($id);
 
         $comments = $post->comments()->orderBy('created_at', 'desc')->get();
 
-        return view('posts.show', [
+        return [
             'post'     => $post,
             'comments' => $comments,
-        ]);
+        ];
     }
+
 }

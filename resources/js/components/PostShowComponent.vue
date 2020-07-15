@@ -57,19 +57,19 @@
 </template>
 
 <script>
-    export default {
-        props: {
-            postId: String
-        },
-        data: function() {
-            return {
-                color: 'blue' // ランダムに抽出する ['red', 'blue', 'yellow']
-            }
-        },
-        mounted() {
-            console.log(this.postId);
+export default {
+    props: {
+        postId: String
+    },
+    data: function() {
+        return {
+            color: 'blue' // ランダムに抽出する ['red', 'blue', 'yellow']
         }
+    },
+    mounted() {
+        console.log(this.postId);
     }
+}
 </script>
 
 <style scoped>
