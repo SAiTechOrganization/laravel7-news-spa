@@ -83,6 +83,10 @@ export default {
 </script>
 
 <style scoped>
+.post-body {
+    white-space: pre;
+}
+
 textarea {
     resize: none;
     height: 100%;
@@ -97,8 +101,8 @@ textarea {
 }
 
 .btn-submit {
-    bottom: 15px;
     right: 15px;
+    bottom: 15px;
 }
 
 .link-delete {

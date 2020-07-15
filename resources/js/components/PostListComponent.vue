@@ -33,7 +33,7 @@
                 <h3 class="post-title">{{ post.title }}</h3>
                 <p class="post-body">{{ post.body }}</p>
                 <router-link v-bind:to="{ name: 'post.show', params: { postId: post.id.toString() } }">
-                    <a>記事全文・コメントを見る</a>
+                    <p>記事全文・コメントを見る</p>
                 </router-link>
             </div>
             <hr>
@@ -86,5 +86,12 @@ export default {
 
 textarea {
     resize: none;
+}
+
+.post-body {
+    padding-right: 1.0rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 </style>
