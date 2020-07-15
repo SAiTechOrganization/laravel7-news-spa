@@ -3,71 +3,81 @@
     <div class="row">
         <div class="col-xs-12 col-md-12">
             <div class="post">
-                <h3 class="post-title">タイトル1</h3>
-                <p class="post-body">ボディ1</p>
+                <h3 class="post-title">{{ post.title }}</h3>
+                <p class="post-body">{{ post.body }}</p>
             </div>
             <hr>
         </div>
     </div>
-    <section class="comments">
-        <div class="form-comment">
-            <form>
-                <div class="input-body">
-                    <textarea name="body" class="post-it post-it-blue"></textarea>
-                    <button type="submit" class="btn-submit mb-2 ml-2 mr-2">
-                        コメントを書く
-                    </button>
+    <div class="row">
+        <div class="col-xs-12 col-md-4 col-lg-3 mb-4">
+            <div class="card position-relative">
+                <div class="card-body">
+                    <form v-on:submit.prevent="submitComment()">
+                        <textarea name="body" rows="4" v-model="newComment.body"></textarea>
+                        <button type="submit" class="btn btn-primary btn-submit position-absolute">
+                            コメントを書く
+                        </button>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
-        <form class="comment">
-            <div class="input-body">
-                <div class="post-it post-it-blue">コメントサンプル</div>
-                <button type="submit" class="btn-submit mb-2 ml-2 mr-2">
-                    コメントを消す
-                </button>
+        <div class="col-xs-12 col-md-4 col-lg-3 mb-4" v-for="comment in comments" v-bind:key="comment.id">
+            <div class="card position-relative">
+                <div class="card-body">
+                    <p>{{ comment.body }}</p>
+                    <a href="#" class="link-delete position-absolute" v-on:click="deleteComment(comment.id)">
+                        コメントを消す
+                    </a>
+                </div>
             </div>
-        </form>
-        <form class="comment">
-            <div class="input-body">
-                <div class="post-it post-it-blue">コメントサンプル</div>
-                <button type="submit" class="btn-submit mb-2 ml-2 mr-2">
-                    コメントを消す
-                </button>
-            </div>
-        </form>
-        <form class="comment">
-            <div class="input-body">
-                <div class="post-it post-it-blue">コメントサンプル</div>
-                <button type="submit" class="btn-submit mb-2 ml-2 mr-2">
-                    コメントを消す
-                </button>
-            </div>
-        </form>
-        <form class="comment">
-            <div class="input-body">
-                <div class="post-it post-it-blue">コメントサンプル</div>
-                <button type="submit" class="btn-submit mb-2 ml-2 mr-2">
-                    コメントを消す
-                </button>
-            </div>
-        </form>
-    </section>
+        </div>
+    </div>
 </div>
 </template>
 
 <script>
+const postShowURL = '/laravel-news-spa/api/posts/';
+const commentStoreURL = '/laravel-news-spa/api/comments';
+const commentDestroyURL = '/laravel-news-spa/api/comments/';
+
 export default {
     props: {
         postId: String
     },
     data: function() {
         return {
-            color: 'blue' // ランダムに抽出する ['red', 'blue', 'yellow']
+            post: {},
+            newComment: {
+                post_id: this.postId
+            },
+            comments: [],
+        }
+    },
+    methods: {
+        fetchPost() {
+            axios.get(postShowURL + this.postId)
+                .then((res) => {
+                    this.post = res.data.post;
+                    this.comments = res.data.comments;
+                });
+        },
+        submitComment() {
+            axios.post(commentStoreURL, this.newComment)
+                .then((res) => {
+                    this.newComment.body = '';
+                    this.fetchPost();
+                });
+        },
+        deleteComment(id) {
+            axios.delete(commentDestroyURL + id)
+                .then((res) => {
+                    this.fetchPost();
+                });
         }
     },
     mounted() {
-        console.log(this.postId);
+        this.fetchPost();
     }
 }
 </script>
@@ -75,87 +85,24 @@ export default {
 <style scoped>
 textarea {
     resize: none;
-}
-
-.form-comment .input-body,
-.comment .input-body {
-    display: inline-block;
-    position: relative;
-    margin-left: 1.0rem;
-}
-
-.form-comment .post-it,
-.comment .post-it {
-    resize: none;
-    height: 10.0rem;
-    width: 11.5rem;
-    margin-top: 30px;
-    margin-left: 20px;
+    height: 100%;
+    width: 100%;
     border: none;
-    padding: 1.0em;
+    padding: 0.5em;
     overflow: hidden;
-    box-shadow: 0 .5rem 0.5rem hsla(0, 0%, 0%, .1);
-    font-size: 0.9rem;
-    line-height: 1.8;
 }
 
-.form-comment .post-it-blue,
-.comment .post-it-blue {
-    background-image:
-        linear-gradient(180deg, hsla(0, 0%, 45%, .1) 2rem, hsla(0, 100%, 100%, 0) 2.5rem),
-        linear-gradient(180deg, hsla(200, 100%, 85%, 1), hsla(200, 100%, 85%, 1));
+.card {
+    height: 12.0rem;
 }
 
-.form-comment .post-it-red,
-.comment .post-it-red {
-    background-image:
-        linear-gradient(180deg, hsla(0, 0%, 45%, .1) 2rem, hsla(0, 100%, 100%, 0) 2.5rem),
-        linear-gradient(180deg, hsla(15, 100%, 85%, 1), hsla(15, 100%, 85%, 1));
+.btn-submit {
+    bottom: 15px;
+    right: 15px;
 }
 
-.form-comment .post-it-yellow,
-.comment .post-it-yellow {
-    background-image:
-        linear-gradient(180deg, hsla(0, 0%, 45%, .1) 2rem, hsla(0, 100%, 100%, 0) 2.5rem),
-        linear-gradient(180deg, hsla(60, 100%, 85%, 1), hsla(60, 100%, 85%, 1));
-}
-
-.form-comment .btn-submit {
-	position: absolute;
-	right: 10px;
-	bottom: 10px;
-    display: inline-block;
-    padding: 0.5em 1em;
-    text-decoration: none;
-    background: #f2fcff;
-    border: dashed 1px #67c5ff;
-    border-radius: 3px;
-    transition: .4s;
-}
-
-.form-comment .btn-submit:hover {
-    border-style: dotted;
-    color: #679efd;
-}
-
-.comments {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.comment .btn-submit {
-	position: absolute;
-	right: 10px;
-	bottom: 10px;
-    display: inline-block;
-    padding: 0.5em 1em;
-    color: blue;
-    text-decoration: underline;
-    background: none;
-    border: none;
-}
-
-.comment .btn-submit:hover {
-    color: red;
+.link-delete {
+    right: 20px;
+    bottom: 20px;
 }
 </style>

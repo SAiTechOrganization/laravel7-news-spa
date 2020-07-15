@@ -5,15 +5,16 @@
             <h3>さぁ、最新のニュースを<span class="break-xs"><br></span>シェアしましょう</h3>
         </div>
         <div class="col-xs-12 col-md-12">
-            <form>
+            <form v-on:submit.prevent="submitPost()">
                 <div class="row form-group mb-2">
                     <label for="title" class="col-xs-12 col-md-2  col-lg-2 label-title">タイトル</label>
                     <input type="text" class="col-xs-12 col-md-9 col-lg-6 form-control ml-2 mr-2"
-                           id="title">
+                           id="title" v-model="post.title">
                 </div>
                 <div class="row form-group mb-2">
                     <label for="body" class="col-xs-12 col-md-2 col-lg-2 label-body">記事</label>
-                    <textarea class="col-xs-12 col-md-9 col-lg-6 form-control ml-2 mr-2" id="body" rows="4">
+                    <textarea class="col-xs-12 col-md-9 col-lg-6 form-control ml-2 mr-2"
+                              id="body" rows="4" v-model="post.body">
                     </textarea>
                 </div>
                 <div class="row">
@@ -26,13 +27,13 @@
             <hr>
         </div>
     </div>
-    <div class="row">
+    <div class="row" v-for="post in posts" v-bind:key="post.id">
         <div class="col-xs-12 col-md-12">
             <div class="post">
-                <h3 class="post-title">タイトル1</h3>
-                <p class="post-body">ボディ1</p>
-                <router-link v-bind:to="{name: 'post.show', params: {postId: post.id.toString() }}">
-                    <a href="#">記事全文・コメントを見る</a>
+                <h3 class="post-title">{{ post.title }}</h3>
+                <p class="post-body">{{ post.body }}</p>
+                <router-link v-bind:to="{ name: 'post.show', params: { postId: post.id.toString() } }">
+                    <a>記事全文・コメントを見る</a>
                 </router-link>
             </div>
             <hr>
@@ -42,13 +43,32 @@
 </template>
 
 <script>
+const postIndexURL = '/laravel-news-spa/api/posts/';
+const postStoreURL = '/laravel-news-spa/api/posts';
+
 export default {
     data: function() {
         return {
-            post: {
-                id: 1
-            }
+            post: {},
+            posts: []
         }
+    },
+    methods: {
+        fetchPosts() {
+            axios.get(postIndexURL)
+                .then((res) => {
+                    this.posts = res.data;
+                });
+        },
+        submitPost() {
+            axios.post(postStoreURL, this.post)
+                .then((res) => {
+                    this.fetchPosts();
+                });
+        }
+    },
+    mounted() {
+        this.fetchPosts();
     }
 }
 </script>
