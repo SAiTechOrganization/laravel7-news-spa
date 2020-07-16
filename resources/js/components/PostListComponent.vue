@@ -43,6 +43,10 @@
                             </label>
                             <input type="text" class="form-control thumbnail-name" readonly="" v-bind:value="selectedFile">
                         </div>
+                        <ul class="thumbnail-note" v-bind:class=" colorNote ? 'text-danger': ''">
+                            <li>ファイルサイズは2.0MBまでです。</li>
+                            <li>画像ファイルを選択してください。</li>
+                        </ul>
                         <div class="img-wrapper">
                             <img class="img-fluid thumbnail-preview" v-bind:src="formPost.thumbnail" v-if="formPost.thumbnail">
                         </div>
@@ -58,13 +62,14 @@
             <hr>
         </div>
     </div>
+
     <div v-if="loading" class="text-center">
         <div class="spinner-border text-secondary mt-5" role="status">
             <span class="sr-only">Loading...</span>
         </div>
     </div>
     <template v-else>
-        <div class="row" v-for="post in posts" v-bind:key="post.id">
+        <div class="row row-post" v-for="post in posts" v-bind:key="post.id">
             <div class="col-3 col-sm-2 img-wrapper text-center">
                 <img class="img-fluid rounded-circle" v-bind:src="post.thumbnail" alt="No Image">
             </div>
@@ -116,11 +121,12 @@ export default {
         return {
             loading: false,
             errors: null,
+            colorNote: false,
             selectedFile: '',
             formPost: {
                 title: '',
                 body: '',
-                thumbnail: ''
+                thumbnail: null
             },
             posts: []
         }
@@ -142,9 +148,17 @@ export default {
                 });
         },
         thumbnailSelected(e) {
-            const reader = new FileReader();
-
             let thumbnail = e.target.files[0];
+
+            this.colorNote = false;
+
+            if (!this.checkThumbnail(thumbnail)) {
+                this.colorNote = true;
+
+                return;
+            }
+
+            let reader = new FileReader();
 
             reader.onload = (ev) => {
                 this.formPost.thumbnail = ev.target.result;
@@ -170,7 +184,7 @@ export default {
                     this.selectedFile       = '';
                     this.formPost.title     = '';
                     this.formPost.body      = '';
-                    this.formPost.thumbnail = '';
+                    this.formPost.thumbnail = null;
 
                     this.fetchPosts();
                 }).catch((error) => {
@@ -206,6 +220,19 @@ export default {
             this.errors = null;
 
             return true;
+        },
+        checkThumbnail(file) {
+            const maxFileSize = 2 * 1024 * 1024;
+            const pattern = 'image/';
+
+            const isImage = file.type.indexOf(pattern) > -1;
+            const isValidFileSize = file.size <= maxFileSize;
+
+            if (!isImage || !isValidFileSize) {
+                return false;
+            }
+
+            return true;
         }
     },
     mounted() {
@@ -235,6 +262,10 @@ textarea {
     border-bottom-right-radius: 0;
 }
 
+.thumbnail-note {
+    list-style: disclosure-closed;
+}
+
 .thumbnail-preview {
     max-height: 200px;
     max-width: 100%;
@@ -251,6 +282,10 @@ textarea {
 .post-thumbnail {
     max-height: 100px;
     max-width: 100%;
+}
+
+.row-post {
+    height: 160px;
 }
 
 .img-wrapper {
