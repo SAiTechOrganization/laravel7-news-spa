@@ -7,11 +7,16 @@
     </div>
     <template v-else>
         <div class="row">
-            <div class="col-xs-12 col-md-12">
+            <div class="col-12 col-sm-4 img-wrapper text-center mb-4 mb-sm-0" v-if="post.thumbnail">
+                <img class="img-fluid img-thumbnail" v-bind:src="post.thumbnail">
+            </div>
+            <div class="col-12" v-bind:class=" post.thumbnail ? 'col-md-8' : '' ">
                 <div class="post">
                     <h3 class="post-title">{{ post.title }}</h3>
                     <p class="post-body">{{ post.body }}</p>
                 </div>
+            </div>
+            <div class="col-sm-12 col-md-12">
                 <hr>
             </div>
         </div>
@@ -55,11 +60,11 @@
     </div>
     <template v-else>
         <div class="row">
-            <div class="col-xs-12 col-md-4 col-lg-3 mb-4">
+            <div class="col-sm-12 col-md-4 col-lg-3 mb-4">
                 <div class="card position-relative">
                     <div class="card-body">
                         <form v-on:submit.prevent="submitComment()">
-                            <textarea name="body" rows="4" v-model="newComment.body"></textarea>
+                            <textarea name="body" rows="4" v-model="formComment.body"></textarea>
                             <button type="submit" class="btn btn-primary btn-submit position-absolute">
                                 コメントを書く
                             </button>
@@ -67,7 +72,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-4 col-lg-3 mb-4" v-for="comment in comments" v-bind:key="comment.id">
+            <div class="col-sm-12 col-md-4 col-lg-3 mb-4" v-for="comment in comments" v-bind:key="comment.id">
                 <div class="card position-relative">
                     <div class="card-body">
                         <p class="comment-body">{{ comment.body }}</p>
@@ -97,7 +102,7 @@ export default {
             loadingComment: false,
             errors: null,
             post: {},
-            newComment: {
+            formComment: {
                 post_id: this.postId,
                 body: ''
             },
@@ -134,9 +139,9 @@ export default {
 
             this.loadingComment = true;
 
-            axios.post(commentStoreURL, this.newComment)
+            axios.post(commentStoreURL, this.formComment)
                 .then((res) => {
-                    this.newComment.body = '';
+                    this.formComment.body = '';
 
                     this.fetchPost();
                 }).catch((error) => {
@@ -158,8 +163,8 @@ export default {
                 });
         },
         checkForm() {
-            const existBody = !!this.newComment.body;
-            const isBodyValidLength = this.newComment.body.length <= 50;
+            const existBody = !!this.formComment.body;
+            const isBodyValidLength = this.formComment.body.length <= 50;
 
             this.errors = {
                 body: []
@@ -223,5 +228,11 @@ textarea:focus {
 .link-delete {
     right: 20px;
     bottom: 20px;
+}
+
+.img-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

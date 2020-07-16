@@ -29,8 +29,11 @@ class PostController extends Controller
         );
 
         $post = new Post;
-        $post->title = $request->title;
-        $post->body  = $request->body;
+
+        $post->title     = $request->title;
+        $post->body      = $request->body;
+        $post->thumbnail = $request->thumbnail;
+
         $post->save();
 
         return $post;
