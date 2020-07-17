@@ -8,8 +8,13 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
 
-    public function index() {
-        return Post::orderBy('created_at', 'desc')->paginate(10);
+    public function index(Request $request) {
+        $fetch_type = $request->input('type');
+        $ref_id     = $request->input('ref_id');
+
+        $posts = new Post;
+
+        return $posts->fetchPosts($fetch_type, $ref_id);
     }
 
     public function store(Request $request) {

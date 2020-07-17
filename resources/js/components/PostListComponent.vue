@@ -115,8 +115,14 @@
 </template>
 
 <script>
-const postIndexURL = '/laravel-news-spa/api/posts?page=';
+const postIndexURL = '/laravel-news-spa/api/posts';
 const postStoreURL = '/laravel-news-spa/api/posts';
+
+const queryParamfetchType   = 'type=';
+const queryParamReferenceId = 'ref_id=';
+
+const fetchTypeRecent = 'recent';
+const fetchTypePast   = 'past';
 
 export default {
     data: function() {
@@ -125,14 +131,15 @@ export default {
             errors: null,
             colorNote: false,
             timeoutId: 0,
-            currentPage: 0,
             selectedFile: '',
             formPost: {
                 title: '',
                 body: '',
                 thumbnail: null
             },
-            posts: []
+            posts: [],
+            recentRefId: 0,
+            pastRefId: 0
         }
     },
     methods: {
@@ -146,37 +153,52 @@ export default {
             this.timeoutId = setTimeout(function() {
                 that.timeoutId = 0 ;
 
-                if (document.body.clientHeight - window.innerHeight - window.scrollY < 10) {
-                    if (that.posts.length / 10 !== that.currentPage) {
-                        return;
-                    }
+                if (window.scrollY === 0) {
+                    that.fetchPosts(fetchTypeRecent, that.recentRefId);
+                }
 
-                    that.fetchPosts();
+                if (document.body.clientHeight - window.innerHeight - window.scrollY < 10) {
+                    that.fetchPosts(fetchTypePast, that.pastRefId);
                 }
             }, 1000);
         },
-        fetchPosts() {
-            this.currentPage++;
-
+        fetchPosts(fetchType = fetchTypeRecent, ref_id = 0) {
             this.loading = true;
 
-            axios.get(postIndexURL + this.currentPage)
+            let that = this;
+
+            axios.get(postIndexURL + '?' + queryParamfetchType + fetchType + '&' + queryParamReferenceId + ref_id)
                 .then((res) => {
-                    this.errors = null;
+                    // this.errors = null;
+
+                    if (res.data.length === 0) {
+                        return
+                    };
 
                     if (this.posts.length === 0) {
-                        this.posts = res.data.data;
-                    } else {
-                        res.data.data.forEach(el => {
-                            this.posts.push(el);                            
-                        });
-                    }
+                        this.posts = res.data;
 
-                    this.loading = false;
+                        this.recentRefId = this.posts.reduce((a, b) => { return a.id > b.id ? a : b; }).id;
+                        this.pastRefId   = this.posts.reduce((a, b) => { return a.id < b.id ? a : b; }).id;
+                    } else {
+                        if (fetchType === fetchTypeRecent) {
+                            res.data.forEach(el => {
+                                this.posts.unshift(el);
+                            });
+
+                            this.recentRefId = res.data.reduce((a, b) => { return a.id > b.id ? a : b; }).id;
+                        } else {
+                            res.data.forEach(el => {
+                                this.posts.push(el);
+                            });
+
+                            this.pastRefId = res.data.reduce((a, b) => { return a.id < b.id ? a : b; }).id;
+                        }
+                    }
                 }).catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
-
-                    this.loading = false;
+                }).then(function() {
+                    that.loading = false;
                 });
         },
         thumbnailSelected(e) {
@@ -218,9 +240,8 @@ export default {
                     this.formPost.body      = '';
                     this.formPost.thumbnail = null;
 
-                    this.currentPage = 0;
-                    this.posts = [];
-                    this.fetchPosts();
+                    this.errors = null;
+                    this.fetchPosts(fetchTypeRecent, this.recentRefId);
                 }).catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
                 });
@@ -288,14 +309,14 @@ export default {
 }
 
 .fade-layer {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-  background-color: #000000;
-  opacity: 0.5;
-  z-index: 1;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    opacity: 0.5;
+    z-index: 1;
 }
 
 .spinner-wrapper {
