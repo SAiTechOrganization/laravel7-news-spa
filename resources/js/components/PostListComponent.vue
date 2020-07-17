@@ -1,5 +1,14 @@
 <template>
 <div class="container">
+    <template v-if="loading"> 
+        <div class="fade-layer"></div>
+        <div class="spinner-wrapper text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </template>
+
     <div class="row">
         <div class="col-sm-12 col-md-12 mb-4">
             <h3>さぁ、最新のニュースを<span class="break-sm"><br></span>シェアしましょう</h3>
@@ -63,28 +72,21 @@
         </div>
     </div>
 
-    <div v-if="loading" class="text-center">
-        <div class="spinner-border text-secondary mt-5" role="status">
-            <span class="sr-only">Loading...</span>
+    <div class="row row-post" v-for="post in posts" v-bind:key="post.id">
+        <div class="col-3 col-sm-2 img-wrapper text-center">
+            <img class="post-thumbnail img-fluid rounded-circle" v-bind:src="post.thumbnail" alt="No Image">
+        </div>
+        <div class="col-9 col-sm-10">
+            <h3 class="post-title">{{ post.title }}</h3>
+            <p class="post-body">{{ post.body }}</p>
+            <router-link v-bind:to="{ name: 'post.show', params: { postId: post.id.toString() } }">
+                <span>記事全文・コメントを見る</span>
+            </router-link>
+        </div>
+        <div class="col-sm-12">
+            <hr>
         </div>
     </div>
-    <template v-else>
-        <div class="row row-post" v-for="post in posts" v-bind:key="post.id">
-            <div class="col-3 col-sm-2 img-wrapper text-center">
-                <img class="img-fluid rounded-circle" v-bind:src="post.thumbnail" alt="No Image">
-            </div>
-            <div class="col-9 col-sm-10">
-                <h3 class="post-title">{{ post.title }}</h3>
-                <p class="post-body">{{ post.body }}</p>
-                <router-link v-bind:to="{ name: 'post.show', params: { postId: post.id.toString() } }">
-                    <span>記事全文・コメントを見る</span>
-                </router-link>
-            </div>
-            <div class="col-sm-12">
-                <hr>
-            </div>
-        </div>
-    </template>
 
     <div class="modal fade" id="confirm-post" tabindex="-1" role="dialog">
         <div class="modal-dialog">
@@ -113,7 +115,7 @@
 </template>
 
 <script>
-const postIndexURL = '/laravel-news-spa/api/posts/';
+const postIndexURL = '/laravel-news-spa/api/posts?page=';
 const postStoreURL = '/laravel-news-spa/api/posts';
 
 export default {
@@ -122,6 +124,8 @@ export default {
             loading: false,
             errors: null,
             colorNote: false,
+            timeoutId: 0,
+            currentPage: 0,
             selectedFile: '',
             formPost: {
                 title: '',
@@ -132,13 +136,41 @@ export default {
         }
     },
     methods: {
+        handleScroll() {
+            if (this.timeoutId) {
+                return;
+            }
+
+            let that = this;
+
+            this.timeoutId = setTimeout(function() {
+                that.timeoutId = 0 ;
+
+                if (document.body.clientHeight - window.innerHeight - window.scrollY < 10) {
+                    if (that.posts.length / 10 !== that.currentPage) {
+                        return;
+                    }
+
+                    that.fetchPosts();
+                }
+            }, 1000);
+        },
         fetchPosts() {
+            this.currentPage++;
+
             this.loading = true;
 
-            axios.get(postIndexURL)
+            axios.get(postIndexURL + this.currentPage)
                 .then((res) => {
                     this.errors = null;
-                    this.posts = res.data;
+
+                    if (this.posts.length === 0) {
+                        this.posts = res.data.data;
+                    } else {
+                        res.data.data.forEach(el => {
+                            this.posts.push(el);                            
+                        });
+                    }
 
                     this.loading = false;
                 }).catch((error) => {
@@ -186,6 +218,8 @@ export default {
                     this.formPost.body      = '';
                     this.formPost.thumbnail = null;
 
+                    this.currentPage = 0;
+                    this.posts = [];
                     this.fetchPosts();
                 }).catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
@@ -235,9 +269,14 @@ export default {
             return true;
         }
     },
-    mounted() {
+    mounted: function() {
         this.fetchPosts();
-    }
+
+        window.addEventListener('scroll', this.handleScroll);
+    },
+    beforeDestroy: function() {
+        window.removeEventListener('scroll', this.handleScroll);
+    },
 }
 </script>
 
@@ -246,6 +285,24 @@ export default {
     .break-sm {
         display: none;
     }
+}
+
+.fade-layer {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+.spinner-wrapper {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 99;
 }
 
 .label-title,

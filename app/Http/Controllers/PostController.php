@@ -9,7 +9,7 @@ class PostController extends Controller
 {
 
     public function index() {
-        return Post::orderBy('created_at', 'desc')->get();
+        return Post::orderBy('created_at', 'desc')->paginate(10);
     }
 
     public function store(Request $request) {
