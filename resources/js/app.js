@@ -38,12 +38,12 @@ const router = new VueRouter({
     mode: 'history',
     routes: [
         {
-            path: '/laravel-news-spa/',
+            path: '/',
             name: 'post.list',
             component: PostListComponent
         },
         {
-            path: '/laravel-news-spa/posts/:postId',
+            path: '/posts/:postId',
             name: 'post.show',
             component: PostShowComponent,
             props: true
