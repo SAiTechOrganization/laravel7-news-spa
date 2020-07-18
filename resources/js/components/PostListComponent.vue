@@ -127,7 +127,7 @@ const fetchTypePast   = 'past';
 export default {
     data: function() {
         return {
-            loading: false,
+            loading: true,
             errors: null,
             colorNote: false,
             timeoutId: 0,
@@ -163,14 +163,10 @@ export default {
             }, 1000);
         },
         fetchPosts(fetchType = fetchTypeRecent, ref_id = 0) {
-            this.loading = true;
-
             let that = this;
 
             axios.get(postIndexURL + '?' + queryParamfetchType + fetchType + '&' + queryParamReferenceId + ref_id)
                 .then((res) => {
-                    // this.errors = null;
-
                     if (res.data.length === 0) {
                         return
                     };
