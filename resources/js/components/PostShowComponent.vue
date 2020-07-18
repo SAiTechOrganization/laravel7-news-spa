@@ -235,4 +235,8 @@ textarea:focus {
     justify-content: center;
     align-items: center;
 }
+
+.img-thumbnail {
+    width: inherit;
+}
 </style>
