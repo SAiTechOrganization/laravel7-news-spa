@@ -88,9 +88,9 @@
 </template>
 
 <script>
-const postShowURL = '/laravel-news-spa/api/posts/';
-const commentStoreURL = '/laravel-news-spa/api/comments';
-const commentDestroyURL = '/laravel-news-spa/api/comments/';
+const postShowURL       = '/api/posts/';
+const commentStoreURL   = '/api/comments';
+const commentDestroyURL = '/api/comments/';
 
 export default {
     props: {

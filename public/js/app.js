@@ -2060,7 +2060,8 @@ var fetchTypePast = 'past';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      loading: true,
+      loading: false,
+      // true for prod, false for dev
       errors: null,
       colorNote: false,
       timeoutId: 0,
@@ -2099,6 +2100,8 @@ var fetchTypePast = 'past';
 
       var fetchType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : fetchTypeRecent;
       var ref_id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+      this.loading = true; // behavior only for dev
+
       var that = this;
       axios.get(postIndexURL + '?' + queryParamfetchType + fetchType + '&' + queryParamReferenceId + ref_id).then(function (res) {
         if (res.data.length === 0) {

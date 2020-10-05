@@ -115,8 +115,8 @@
 </template>
 
 <script>
-const postIndexURL = '/laravel-news-spa/api/posts';
-const postStoreURL = '/laravel-news-spa/api/posts';
+const postIndexURL = '/api/posts';
+const postStoreURL = '/api/posts';
 
 const queryParamfetchType   = 'type=';
 const queryParamReferenceId = 'ref_id=';
