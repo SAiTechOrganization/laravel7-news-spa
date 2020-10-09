@@ -18,10 +18,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('posts', 'PostController')->only([
-    'index', 'store', 'show'
-]);
+Route::namespace('Api')->group(function () {
+    Route::resource('posts', 'PostController')->only([
+        'index',
+        'show',
+        'store',
+    ]);
 
-Route::resource('comments', 'CommentController')->only([
-    'store', 'destroy'
-]);
+    Route::resource('comments', 'CommentController')->only([
+        'store',
+        'destroy',
+    ]);
+});

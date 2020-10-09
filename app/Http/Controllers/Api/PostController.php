@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Post;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $fetch_type = $request->input('type');
         $ref_id     = $request->input('ref_id');
 
@@ -17,7 +19,20 @@ class PostController extends Controller
         return $posts->fetchPosts($fetch_type, $ref_id);
     }
 
-    public function store(Request $request) {
+    public function show(int $id)
+    {
+        $post = Post::find($id);
+
+        $comments = $post->comments()->orderBy('created_at', 'desc')->get();
+
+        return [
+            'post'     => $post,
+            'comments' => $comments,
+        ];
+    }
+
+    public function store(Request $request)
+    {
         $this->validate(
             $request,
             [
@@ -45,17 +60,6 @@ class PostController extends Controller
         $post->save();
 
         return $post;
-    }
-
-    public function show(int $id) {
-        $post = Post::find($id);
-
-        $comments = $post->comments()->orderBy('created_at', 'desc')->get();
-
-        return [
-            'post'     => $post,
-            'comments' => $comments,
-        ];
     }
 
 }

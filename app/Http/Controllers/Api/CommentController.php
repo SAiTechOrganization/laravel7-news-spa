@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Comment;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $this->validate(
             $request,
             [
@@ -26,6 +28,7 @@ class CommentController extends Controller
         );
 
         $comment = new Comment;
+
         $comment->post_id = $request->post_id;
         $comment->body    = $request->body;
         $comment->save();
