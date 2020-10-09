@@ -123,7 +123,7 @@ const fetchTypePast   = 'past';
 export default {
     data: function() {
         return {
-            loading: false, // true for prod, false for dev
+            loading: true,
             errors: null,
             colorNote: false,
             timeoutId: 0,
@@ -159,8 +159,6 @@ export default {
             }, 1000);
         },
         fetchPosts(fetchType = fetchTypeRecent, ref_id = 0) {
-            this.loading = true; // behavior only for dev
-
             let that = this;
 
             axios
