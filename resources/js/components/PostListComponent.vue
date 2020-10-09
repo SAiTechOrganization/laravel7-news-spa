@@ -102,15 +102,11 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">いいえ</button>
-                    <button type="button" class="btn btn-success" id="btn-post" name="btn-post"
-                            v-on:click="submitPost">
-                         はい
-                    </button>
+                    <button type="button" class="btn btn-success" id="btn-post" name="btn-post" v-on:click="submitPost">はい</button>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 </template>
 
@@ -167,7 +163,8 @@ export default {
 
             let that = this;
 
-            axios.get(postIndexURL + '?' + queryParamfetchType + fetchType + '&' + queryParamReferenceId + ref_id)
+            axios
+                .get(`${postIndexURL}?${queryParamfetchType}${fetchType}&${queryParamReferenceId}${ref_id}`)
                 .then((res) => {
                     if (res.data.length === 0) {
                         return
@@ -193,9 +190,11 @@ export default {
                             this.pastRefId = res.data.reduce((a, b) => { return a.id < b.id ? a : b; }).id;
                         }
                     }
-                }).catch((error) => {
+                })
+                .catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
-                }).then(function() {
+                })
+                .then(() => {
                     that.loading = false;
                 });
         },
@@ -231,7 +230,8 @@ export default {
             // NOTE: アニメーションを使用しないため,フェード・アウト効果を出すためにjQueryを利用
             $('#confirm-post').modal('hide');
 
-            axios.post(postStoreURL, this.formPost)
+            axios
+                .post(postStoreURL, this.formPost)
                 .then((res) => {
                     this.selectedFile       = '';
                     this.formPost.title     = '';
@@ -240,7 +240,8 @@ export default {
 
                     this.errors = null;
                     this.fetchPosts(fetchTypeRecent, this.recentRefId);
-                }).catch((error) => {
+                })
+                .catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
                 });
         },

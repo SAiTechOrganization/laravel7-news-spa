@@ -63,7 +63,7 @@
             <div class="col-sm-12 col-md-4 col-lg-3 mb-4">
                 <div class="card position-relative">
                     <div class="card-body">
-                        <form v-on:submit.prevent="submitComment()">
+                        <form v-on:submit.prevent="submitComment">
                             <textarea name="body" rows="4" v-model="formComment.body"></textarea>
                             <button type="submit" class="btn btn-primary btn-submit position-absolute">
                                 コメントを書く
@@ -117,7 +117,8 @@ export default {
 
             this.loadingComment = true;
 
-            axios.get(postShowURL + this.postId)
+            axios
+                .get(`${postShowURL}${this.postId}`)
                 .then((res) => {
                     this.errors = null;
                     this.post = res.data.post;
@@ -125,7 +126,8 @@ export default {
 
                     this.loadingPost = false;
                     this.loadingComment = false;
-                }).catch((error) => {
+                })
+                .catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
 
                     this.loadingPost = false;
@@ -139,12 +141,14 @@ export default {
 
             this.loadingComment = true;
 
-            axios.post(commentStoreURL, this.formComment)
+            axios
+                .post(commentStoreURL, this.formComment)
                 .then((res) => {
                     this.formComment.body = '';
 
                     this.fetchPost();
-                }).catch((error) => {
+                })
+                .catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
 
                     this.loadingComment = false;
@@ -153,10 +157,12 @@ export default {
         deleteComment(id) {
             this.loadingComment = true;
 
-            axios.delete(commentDestroyURL + id)
+            axios
+                .delete(`${commentDestroyURL}${id}`)
                 .then((res) => {
                     this.fetchPost();
-                }).catch((error) => {
+                })
+                .catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
 
                     this.loadingComment = false;
@@ -188,8 +194,8 @@ export default {
         }
     },
     mounted() {
-        this.fetchPost();0
-    }
+        this.fetchPost();
+    },
 }
 </script>
 

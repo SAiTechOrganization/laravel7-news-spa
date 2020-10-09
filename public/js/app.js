@@ -2047,10 +2047,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 var postIndexURL = '/api/posts';
 var postStoreURL = '/api/posts';
 var queryParamfetchType = 'type=';
@@ -2103,7 +2099,7 @@ var fetchTypePast = 'past';
       this.loading = true; // behavior only for dev
 
       var that = this;
-      axios.get(postIndexURL + '?' + queryParamfetchType + fetchType + '&' + queryParamReferenceId + ref_id).then(function (res) {
+      axios.get("".concat(postIndexURL, "?").concat(queryParamfetchType).concat(fetchType, "&").concat(queryParamReferenceId).concat(ref_id)).then(function (res) {
         if (res.data.length === 0) {
           return;
         }
@@ -2369,7 +2365,7 @@ var commentDestroyURL = '/api/comments/';
       }
 
       this.loadingComment = true;
-      axios.get(postShowURL + this.postId).then(function (res) {
+      axios.get("".concat(postShowURL).concat(this.postId)).then(function (res) {
         _this.errors = null;
         _this.post = res.data.post;
         _this.comments = res.data.comments;
@@ -2406,7 +2402,7 @@ var commentDestroyURL = '/api/comments/';
       var _this3 = this;
 
       this.loadingComment = true;
-      axios["delete"](commentDestroyURL + id).then(function (res) {
+      axios["delete"]("".concat(commentDestroyURL).concat(id)).then(function (res) {
         _this3.fetchPost();
       })["catch"](function (error) {
         _this3.errors = error.response.data.errors || {
@@ -2440,7 +2436,6 @@ var commentDestroyURL = '/api/comments/';
   },
   mounted: function mounted() {
     this.fetchPost();
-    0;
   }
 });
 
@@ -39106,11 +39101,7 @@ var render = function() {
                     attrs: { type: "button", id: "btn-post", name: "btn-post" },
                     on: { click: _vm.submitPost }
                   },
-                  [
-                    _vm._v(
-                      "\n                         はい\n                    "
-                    )
-                  ]
+                  [_vm._v("はい")]
                 )
               ])
             ])
@@ -39324,7 +39315,7 @@ var render = function() {
                           on: {
                             submit: function($event) {
                               $event.preventDefault()
-                              return _vm.submitComment()
+                              return _vm.submitComment($event)
                             }
                           }
                         },
@@ -54724,11 +54715,15 @@ module.exports = function(module) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
-/* harmony import */ var _components_HeaderComponent_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/HeaderComponent.vue */ "./resources/js/components/HeaderComponent.vue");
-/* harmony import */ var _components_PostListComponent_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/PostListComponent.vue */ "./resources/js/components/PostListComponent.vue");
-/* harmony import */ var _components_PostShowComponent_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/PostShowComponent.vue */ "./resources/js/components/PostShowComponent.vue");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var _components_HeaderComponent_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/HeaderComponent.vue */ "./resources/js/components/HeaderComponent.vue");
+/* harmony import */ var _components_PostListComponent_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/PostListComponent.vue */ "./resources/js/components/PostListComponent.vue");
+/* harmony import */ var _components_PostShowComponent_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/PostShowComponent.vue */ "./resources/js/components/PostShowComponent.vue");
 
+
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
 
 
 
@@ -54739,8 +54734,6 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
-
-window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -54748,31 +54741,31 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
  *
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
-
-Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]); // const files = require.context('./', true, /\.vue$/i)
+// const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('header-component', _components_HeaderComponent_vue__WEBPACK_IMPORTED_MODULE_1__["default"]);
+
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('header-component', _components_HeaderComponent_vue__WEBPACK_IMPORTED_MODULE_2__["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-var router = new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
+var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: 'history',
   routes: [{
     path: '/',
     name: 'post.list',
-    component: _components_PostListComponent_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+    component: _components_PostListComponent_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   }, {
     path: '/posts/:postId',
     name: 'post.show',
-    component: _components_PostShowComponent_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    component: _components_PostShowComponent_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
     props: true
   }]
 });
-var app = new Vue({
+var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   router: router
 });
