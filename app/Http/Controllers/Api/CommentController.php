@@ -27,21 +27,17 @@ class CommentController extends Controller
             ]
         );
 
-        $comment = new Comment;
-
-        $comment->post_id = $request->post_id;
-        $comment->body    = $request->body;
-        $comment->save();
-
-        return $comment;
+        return Comment::create([
+            'post_id' => $request->post_id,
+            'body'    => $request->body,
+        ]);
     }
 
-    public function destroy(int $id)
+    public function destroy(Comment $comment)
     {
-        $comment = Comment::find($id);
         $comment->delete();
 
-        return $comment;
+        return response(null, 204);
     }
 
 }

@@ -19,10 +19,8 @@ class PostController extends Controller
         return $posts->fetchPosts($fetch_type, $ref_id);
     }
 
-    public function show(int $id)
+    public function show(Post $post)
     {
-        $post = Post::find($id);
-
         $comments = $post->comments()->orderBy('created_at', 'desc')->get();
 
         return [
@@ -51,15 +49,11 @@ class PostController extends Controller
             ]
         );
 
-        $post = new Post;
-
-        $post->title     = $request->title;
-        $post->body      = $request->body;
-        $post->thumbnail = $request->thumbnail;
-
-        $post->save();
-
-        return $post;
+        return Post::create([
+            'title'     => $request->title,
+            'body'      => $request->body,
+            'thumbnail' => $request->thumbnail,
+        ]);
     }
 
 }
