@@ -88,9 +88,8 @@
 </template>
 
 <script>
-const postsShowURL       = '/api/posts/';
-const commentsStoreURL   = '/api/comments';
-const commentsDestroyURL = '/api/comments/';
+import apiPosts from '../api/posts';
+import apiComments from '../api/comments';
 
 export default {
     props: {
@@ -117,8 +116,8 @@ export default {
 
             this.loadingComment = true;
 
-            axios
-                .get(`${postsShowURL}${this.postId}`)
+            apiPosts
+                .find(this.postId)
                 .then((res) => {
                     this.errors = null;
                     this.post = res.data.post;
@@ -141,8 +140,8 @@ export default {
 
             this.loadingComment = true;
 
-            axios
-                .post(commentsStoreURL, this.formComment)
+            apiComments
+                .store(this.formComment)
                 .then((res) => {
                     this.formComment.body = '';
 
@@ -157,8 +156,8 @@ export default {
         deleteComment(id) {
             this.loadingComment = true;
 
-            axios
-                .delete(`${commentsDestroyURL}${id}`)
+            apiComments
+                .destroy(id)
                 .then((res) => {
                     this.fetchPost();
                 })

@@ -111,11 +111,14 @@
 </template>
 
 <script>
-const postsIndexURL = '/api/posts';
-const postsStoreURL = '/api/posts';
+import apiPosts from '../api/posts';
 
-const queryParamfetchType   = 'type=';
-const queryParamReferenceId = 'ref_id=';
+const getParams = {
+    params: {
+        type: '',
+        ref_id: 0,
+    },
+};
 
 const fetchTypeRecent = 'recent';
 const fetchTypePast   = 'past';
@@ -161,8 +164,11 @@ export default {
         fetchPosts(fetchType = fetchTypeRecent, ref_id = 0) {
             let that = this;
 
-            axios
-                .get(`${postsIndexURL}?${queryParamfetchType}${fetchType}&${queryParamReferenceId}${ref_id}`)
+            getParams.params.type   = fetchType;
+            getParams.params.ref_id = ref_id;
+
+            apiPosts
+                .all(getParams)
                 .then((res) => {
                     if (res.data.length === 0) {
                         return
@@ -228,8 +234,8 @@ export default {
             // NOTE: アニメーションを使用しないため,フェード・アウト効果を出すためにjQueryを利用
             $('#confirm-post').modal('hide');
 
-            axios
-                .post(postsStoreURL, this.formPost)
+            apiPosts
+                .store(this.formPost)
                 .then((res) => {
                     this.selectedFile       = '';
                     this.formPost.title     = '';

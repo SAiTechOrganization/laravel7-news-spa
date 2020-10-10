@@ -1935,6 +1935,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _api_posts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../api/posts */ "./resources/js/api/posts.js");
 //
 //
 //
@@ -2047,10 +2048,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-var postsIndexURL = '/api/posts';
-var postsStoreURL = '/api/posts';
-var queryParamfetchType = 'type=';
-var queryParamReferenceId = 'ref_id=';
+
+var getParams = {
+  params: {
+    type: '',
+    ref_id: 0
+  }
+};
 var fetchTypeRecent = 'recent';
 var fetchTypePast = 'past';
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2096,7 +2100,9 @@ var fetchTypePast = 'past';
       var fetchType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : fetchTypeRecent;
       var ref_id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
       var that = this;
-      axios.get("".concat(postsIndexURL, "?").concat(queryParamfetchType).concat(fetchType, "&").concat(queryParamReferenceId).concat(ref_id)).then(function (res) {
+      getParams.params.type = fetchType;
+      getParams.params.ref_id = ref_id;
+      _api_posts__WEBPACK_IMPORTED_MODULE_0__["default"].all(getParams).then(function (res) {
         if (res.data.length === 0) {
           return;
         }
@@ -2169,7 +2175,7 @@ var fetchTypePast = 'past';
 
       // NOTE: アニメーションを使用しないため,フェード・アウト効果を出すためにjQueryを利用
       $('#confirm-post').modal('hide');
-      axios.post(postsStoreURL, this.formPost).then(function (res) {
+      _api_posts__WEBPACK_IMPORTED_MODULE_0__["default"].store(this.formPost).then(function (res) {
         _this3.selectedFile = '';
         _this3.formPost.title = '';
         _this3.formPost.body = '';
@@ -2244,6 +2250,8 @@ var fetchTypePast = 'past';
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _api_posts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../api/posts */ "./resources/js/api/posts.js");
+/* harmony import */ var _api_comments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../api/comments */ "./resources/js/api/comments.js");
 //
 //
 //
@@ -2333,9 +2341,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-var postsShowURL = '/api/posts/';
-var commentsStoreURL = '/api/comments';
-var commentsDestroyURL = '/api/comments/';
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     postId: String
@@ -2362,7 +2369,7 @@ var commentsDestroyURL = '/api/comments/';
       }
 
       this.loadingComment = true;
-      axios.get("".concat(postsShowURL).concat(this.postId)).then(function (res) {
+      _api_posts__WEBPACK_IMPORTED_MODULE_0__["default"].find(this.postId).then(function (res) {
         _this.errors = null;
         _this.post = res.data.post;
         _this.comments = res.data.comments;
@@ -2384,7 +2391,7 @@ var commentsDestroyURL = '/api/comments/';
       }
 
       this.loadingComment = true;
-      axios.post(commentsStoreURL, this.formComment).then(function (res) {
+      _api_comments__WEBPACK_IMPORTED_MODULE_1__["default"].store(this.formComment).then(function (res) {
         _this2.formComment.body = '';
 
         _this2.fetchPost();
@@ -2399,7 +2406,7 @@ var commentsDestroyURL = '/api/comments/';
       var _this3 = this;
 
       this.loadingComment = true;
-      axios["delete"]("".concat(commentsDestroyURL).concat(id)).then(function (res) {
+      _api_comments__WEBPACK_IMPORTED_MODULE_1__["default"].destroy(id).then(function (res) {
         _this3.fetchPost();
       })["catch"](function (error) {
         _this3.errors = error.response.data.errors || {
@@ -54727,6 +54734,63 @@ module.exports = function(module) {
 	return module;
 };
 
+
+/***/ }),
+
+/***/ "./resources/js/api/comments.js":
+/*!**************************************!*\
+  !*** ./resources/js/api/comments.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+var resource = 'comments';
+var client = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
+  baseURL: '/api'
+});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  store: function store(data) {
+    return client.post(resource, data);
+  },
+  destroy: function destroy(id) {
+    return client["delete"]("".concat(resource, "/").concat(id));
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/api/posts.js":
+/*!***********************************!*\
+  !*** ./resources/js/api/posts.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+var resource = 'posts';
+var client = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
+  baseURL: '/api'
+});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  all: function all(params) {
+    return client.get(resource, params);
+  },
+  find: function find(id) {
+    return client.get("".concat(resource, "/").concat(id));
+  },
+  store: function store(data) {
+    return client.post(resource, data);
+  }
+});
 
 /***/ }),
 
