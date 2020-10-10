@@ -3,9 +3,9 @@ import VueRouter from 'vue-router';
 
 Vue.use(VueRouter);
 
-import HeaderComponent from './components/HeaderComponent.vue';
-import PostListComponent from './components/PostListComponent.vue';
-import PostShowComponent from './components/PostShowComponent.vue';
+import Navbar from './views/Navbar';
+import PostsIndex from './views/PostsIndex';
+import PostsShow from './views/PostsShow';
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -26,8 +26,6 @@ require('./bootstrap');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('header-component', HeaderComponent);
-
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -39,19 +37,20 @@ const router = new VueRouter({
     routes: [
         {
             path: '/',
-            name: 'post.list',
-            component: PostListComponent
+            name: 'posts.index',
+            component: PostsIndex,
         },
         {
             path: '/posts/:postId',
-            name: 'post.show',
-            component: PostShowComponent,
-            props: true
+            name: 'posts.show',
+            component: PostsShow,
+            props: true,
         },
     ]
 });
 
 const app = new Vue({
     el: '#app',
-    router
+    components: { Navbar },
+    router,
 });

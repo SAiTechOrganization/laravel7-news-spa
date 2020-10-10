@@ -4,13 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ config('app.name', 'Laravel News') }}</title>
+    <title>Laravel News SPA</title>
 
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
 <div id="app">
-    <header-component></header-component>
+    <navbar></navbar>
 
     <router-view></router-view>
 </div>

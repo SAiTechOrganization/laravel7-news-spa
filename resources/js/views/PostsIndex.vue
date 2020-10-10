@@ -79,7 +79,7 @@
         <div class="col-9 col-sm-10">
             <h3 class="post-title">{{ post.title }}</h3>
             <p class="post-body">{{ post.body }}</p>
-            <router-link v-bind:to="{ name: 'post.show', params: { postId: post.id.toString() } }">
+            <router-link v-bind:to="{ name: 'posts.show', params: { postId: post.id.toString() } }">
                 <span>記事全文・コメントを見る</span>
             </router-link>
         </div>
@@ -111,8 +111,8 @@
 </template>
 
 <script>
-const postIndexURL = '/api/posts';
-const postStoreURL = '/api/posts';
+const postsIndexURL = '/api/posts';
+const postsStoreURL = '/api/posts';
 
 const queryParamfetchType   = 'type=';
 const queryParamReferenceId = 'ref_id=';
@@ -162,7 +162,7 @@ export default {
             let that = this;
 
             axios
-                .get(`${postIndexURL}?${queryParamfetchType}${fetchType}&${queryParamReferenceId}${ref_id}`)
+                .get(`${postsIndexURL}?${queryParamfetchType}${fetchType}&${queryParamReferenceId}${ref_id}`)
                 .then((res) => {
                     if (res.data.length === 0) {
                         return
@@ -229,7 +229,7 @@ export default {
             $('#confirm-post').modal('hide');
 
             axios
-                .post(postStoreURL, this.formPost)
+                .post(postsStoreURL, this.formPost)
                 .then((res) => {
                     this.selectedFile       = '';
                     this.formPost.title     = '';
