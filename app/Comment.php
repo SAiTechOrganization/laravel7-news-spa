@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-
     protected $fillable = [
         'post_id',
         'body',
@@ -16,5 +15,4 @@ class Comment extends Model
     {
         return $this->belongsTo(Post::class);
     }
-
 }

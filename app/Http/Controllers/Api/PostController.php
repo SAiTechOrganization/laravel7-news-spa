@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-
     public function index(Request $request)
     {
         $fetch_type = $request->input('type');
@@ -17,16 +16,6 @@ class PostController extends Controller
         $posts = new Post;
 
         return $posts->fetchPosts($fetch_type, $ref_id);
-    }
-
-    public function show(Post $post)
-    {
-        $comments = $post->comments()->orderBy('created_at', 'desc')->get();
-
-        return [
-            'post'     => $post,
-            'comments' => $comments,
-        ];
     }
 
     public function store(Request $request)
@@ -56,4 +45,13 @@ class PostController extends Controller
         ]);
     }
 
+    public function show(Post $post)
+    {
+        $comments = $post->comments()->orderBy('created_at', 'desc')->get();
+
+        return [
+            'post'     => $post,
+            'comments' => $comments,
+        ];
+    }
 }

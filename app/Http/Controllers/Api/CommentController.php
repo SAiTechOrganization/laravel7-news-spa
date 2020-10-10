@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-
     public function store(Request $request)
     {
         $this->validate(
@@ -39,5 +38,4 @@ class CommentController extends Controller
 
         return response(null, 204);
     }
-
 }

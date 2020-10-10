@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-
     const LIMIT_PER_RUQUEST = 10;
     const FETCH_TYPE_RECENT = 'recent';
     const FETCH_TYPE_PAST   = 'past';
@@ -47,5 +46,4 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class);
     }
-
 }
