@@ -13,7 +13,7 @@ SAiTechPro Assignment of Vue.js with PHP/Laravel
 
 ## Framework
 
-* Laravel Framework 7.15.0  
+* Laravel Framework 7.28.4  
   https://laravel.com/docs/7.x/readme
 
 ## How to use
@@ -24,7 +24,7 @@ SAiTechPro Assignment of Vue.js with PHP/Laravel
     $ docker-compose up -d --build
     ```
 
-2. Copy CONTAINER ID of the container run up from the image, "laravel7-news_web".
+2. Copy CONTAINER ID of the container run up from the image, "laravel7-news-spa_web".
 
     ```bash
     $ docker ps # then copy id from stdout.
