@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Comment;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $this->validate(
             $request,
             [
@@ -25,20 +26,16 @@ class CommentController extends Controller
             ]
         );
 
-        $comment = new Comment;
-        $comment->post_id = $request->post_id;
-        $comment->body    = $request->body;
-        $comment->save();
-
-        return $comment;
+        return Comment::create([
+            'post_id' => $request->post_id,
+            'body'    => $request->body,
+        ]);
     }
 
-    public function destroy(int $id)
+    public function destroy(Comment $comment)
     {
-        $comment = Comment::find($id);
         $comment->delete();
 
-        return $comment;
+        return response(null, 204);
     }
-
 }

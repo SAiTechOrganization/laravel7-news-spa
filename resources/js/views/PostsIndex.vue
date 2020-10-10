@@ -79,7 +79,7 @@
         <div class="col-9 col-sm-10">
             <h3 class="post-title">{{ post.title }}</h3>
             <p class="post-body">{{ post.body }}</p>
-            <router-link v-bind:to="{ name: 'post.show', params: { postId: post.id.toString() } }">
+            <router-link v-bind:to="{ name: 'posts.show', params: { postId: post.id.toString() } }">
                 <span>記事全文・コメントを見る</span>
             </router-link>
         </div>
@@ -102,24 +102,23 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">いいえ</button>
-                    <button type="button" class="btn btn-success" id="btn-post" name="btn-post"
-                            v-on:click="submitPost">
-                         はい
-                    </button>
+                    <button type="button" class="btn btn-success" id="btn-post" name="btn-post" v-on:click="submitPost">はい</button>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 </template>
 
 <script>
-const postIndexURL = '/api/posts';
-const postStoreURL = '/api/posts';
+import apiPosts from '../api/posts';
 
-const queryParamfetchType   = 'type=';
-const queryParamReferenceId = 'ref_id=';
+const getParams = {
+    params: {
+        type: '',
+        ref_id: 0,
+    },
+};
 
 const fetchTypeRecent = 'recent';
 const fetchTypePast   = 'past';
@@ -165,7 +164,11 @@ export default {
         fetchPosts(fetchType = fetchTypeRecent, ref_id = 0) {
             let that = this;
 
-            axios.get(postIndexURL + '?' + queryParamfetchType + fetchType + '&' + queryParamReferenceId + ref_id)
+            getParams.params.type   = fetchType;
+            getParams.params.ref_id = ref_id;
+
+            apiPosts
+                .all(getParams)
                 .then((res) => {
                     if (res.data.length === 0) {
                         return
@@ -191,9 +194,11 @@ export default {
                             this.pastRefId = res.data.reduce((a, b) => { return a.id < b.id ? a : b; }).id;
                         }
                     }
-                }).catch((error) => {
+                })
+                .catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
-                }).then(function() {
+                })
+                .then(() => {
                     that.loading = false;
                 });
         },
@@ -229,7 +234,8 @@ export default {
             // NOTE: アニメーションを使用しないため,フェード・アウト効果を出すためにjQueryを利用
             $('#confirm-post').modal('hide');
 
-            axios.post(postStoreURL, this.formPost)
+            apiPosts
+                .store(this.formPost)
                 .then((res) => {
                     this.selectedFile       = '';
                     this.formPost.title     = '';
@@ -238,7 +244,8 @@ export default {
 
                     this.errors = null;
                     this.fetchPosts(fetchTypeRecent, this.recentRefId);
-                }).catch((error) => {
+                })
+                .catch((error) => {
                     this.errors = error.response.data.errors || { message: [error.message] };
                 });
         },

@@ -16,8 +16,8 @@ class Post extends Model
         'thumbnail'
     ];
 
-    public function fetchPosts($fetch_type, $ref_id) {
-
+    public function fetchPosts($fetch_type, $ref_id)
+    {
         $posts = $this->take(self::LIMIT_PER_RUQUEST);
 
         if ($fetch_type === self::FETCH_TYPE_RECENT) {
@@ -34,7 +34,7 @@ class Post extends Model
         }
 
         if (is_numeric($ref_id) && (int)$ref_id > 0) {
-            return $posts->orderBy('created_at', 'desc')
+            return $posts->orderBy(self::CREATED_AT, 'desc')
                          ->where('id', '<', $ref_id)
                          ->get();
         }
@@ -44,6 +44,6 @@ class Post extends Model
 
     public function comments()
     {
-        return $this->hasMany('App\Comment');
+        return $this->hasMany(Comment::class);
     }
 }
